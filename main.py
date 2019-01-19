@@ -31,11 +31,26 @@ black = (0, 0, 0)
 
 vel = 5
 
+FPS = 120
+
+game_exit = False
+
+meteors = []
+lasers = []
+
+laser_cooldown_max = 30
+laser_cooldown_count = 0
+laser_cooldown = False
+
+laser_hit = False
+
+meteor_spawn_chance = 80
+
 
 class Laser:
     def __init__(self, surface=laser_blue, pos_x=0.0, pos_y=0.0, speed=vel*2):
         self.surface = surface
-        self.laser_mask = pygame.mask.from_surface(self.surface)
+        self.mask = pygame.mask.from_surface(self.surface)
 
         self.width, self.height = self.surface.get_size()
         self.pos_x = pos_x
@@ -49,7 +64,7 @@ class Laser:
 class Ship:
     def __init__(self, surface=ship_blue, pos_x=W/2, pos_y=H/1.5, speed=vel):
         self.surface = surface
-        self.ship_mask = pygame.mask.from_surface(self.surface)
+        self.mask = pygame.mask.from_surface(self.surface)
 
         self.width, self.height = self.surface.get_size()
         self.pos_x = pos_x
@@ -63,7 +78,7 @@ class Ship:
 class Meteor:
     def __init__(self, surface=meteor_brown_big, pos_x=W/2, pos_y=-50, speed=vel/2):
         self.surface = surface
-        self.meteor_mask = pygame.mask.from_surface(self.surface)
+        self.mask = pygame.mask.from_surface(self.surface)
 
         self.width, self.height = self.surface.get_size()
         self.pos_x = pos_x
@@ -73,23 +88,12 @@ class Meteor:
     def __new__(cls, *args, **kwargs):
         return super(Meteor, cls).__new__(cls)
 
+    def display(self):
+        self.pos_y += self.speed
+        screen.blit(self.surface, (self.pos_x, self.pos_y))
 
-FPS = 120
-
-game_exit = False
-
-ship = Ship()
-
-meteors = []
-lasers = []
-
-laser_cooldown_max = 30
-laser_cooldown_count = 0
-laser_cooldown = False
-
-laser_hit = False
-
-meteor_spawn_chance = 80
+        if self.pos_y > H + self.height:
+            meteors.remove(meteor)
 
 
 class Background:
@@ -113,11 +117,19 @@ class Background:
             self.pos_y_2 = -H
 
 
+def check_collision(obj_1, obj_2):
+    offset = (int(obj_1.pos_x - obj_2.pos_x), int(obj_1.pos_y - obj_2.pos_y))
+    collision_result = obj_2.mask.overlap(obj_1.mask, offset)
+
+    return collision_result
+
+
 background = Background(0, -H, 4)
 
+ship = Ship()
 
 while not game_exit:
-    pygame.time.delay(15)
+    pygame.time.delay(10)
 
     background.display()
 
@@ -136,7 +148,9 @@ while not game_exit:
     if keys[pygame.K_DOWN] and ship.pos_y < H - ship.height - ship.speed:
         ship.pos_y += ship.speed
     if keys[pygame.K_SPACE] and not laser_cooldown:
-        lasers.append(Laser(pos_x=ship.pos_x + (ship.width / 2), pos_y=ship.pos_y))
+        laser = Laser(pos_x=ship.pos_x + (ship.width / 2), pos_y=ship.pos_y)
+        laser.pos_x -= (laser.width / 2)
+        lasers.append(laser)
         laser_cooldown = True
 
     if laser_cooldown:
@@ -151,29 +165,23 @@ while not game_exit:
         meteors.append(meteor)
 
     for meteor in meteors:
-        offset = (int(meteor.pos_x) - int(ship.pos_x), int(meteor.pos_y) - int(ship.pos_y))
-        collision_result = meteor.meteor_mask.overlap(ship.ship_mask, offset)
-        if collision_result:
+        if check_collision(meteor, ship):
             meteor.surface = meteor_grey_big
-
-        meteor.pos_y += meteor.speed
-        screen.blit(meteor.surface, (meteor.pos_x, meteor.pos_y))
-
-        if meteor.pos_y > H + meteor.height:
-            meteors.remove(meteor)
+        meteor.display()
 
     for laser in lasers:
-        for meteor in meteors:
-            offset = (int(laser.pos_x) - int(meteor.pos_x), int(laser.pos_y) - int(meteor.pos_y))
-            collision_result = meteor.meteor_mask.overlap(laser.laser_mask, offset)
-            if collision_result:
-                old_width = laser.width
-                laser.surface = laser_blue_impact
-                l_width, l_heigth = laser.surface.get_size()
-                screen.blit(laser.surface, (laser.pos_x - l_width / 2 + old_width / 2, laser.pos_y - l_heigth / 2))
-                lasers.remove(laser)
-                meteors.remove(meteor)
-                laser_hit = True
+        if laser.pos_y > 0:
+            for meteor in meteors:
+                offset = (int(laser.pos_x) - int(meteor.pos_x), int(laser.pos_y) - int(meteor.pos_y))
+                collision_result = meteor.mask.overlap(laser.mask, offset)
+                if collision_result:
+                    old_width = laser.width
+                    laser.surface = laser_blue_impact
+                    l_width, l_height = laser.surface.get_size()
+                    screen.blit(laser.surface, (laser.pos_x - l_width / 2 + old_width / 2, laser.pos_y - l_height / 2))
+                    lasers.remove(laser)
+                    meteors.remove(meteor)
+                    laser_hit = True
 
         laser.pos_y -= laser.speed
         if laser_hit:
