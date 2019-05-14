@@ -1,10 +1,10 @@
 import pygame
 
-from data.config import laser_blue, vel
+from data.config import default_move_speed, screen
 
 
 class Laser:
-    def __init__(self, surface=laser_blue, pos_x=0.0, pos_y=0.0, speed=vel*2):
+    def __init__(self, surface, pos_x, pos_y, speed=default_move_speed * 2):
         self.surface = surface
         self.mask = pygame.mask.from_surface(self.surface)
 
@@ -13,5 +13,8 @@ class Laser:
         self.pos_y = pos_y
         self.speed = speed
 
-    def __new__(cls, *args, **kwargs):
-        return super(Laser, cls).__new__(cls)
+    def display(self):
+        old_width = self.width
+        l_width, l_height = self.surface.get_size()
+        screen.blit(self.surface, (self.pos_x - l_width / 2 + old_width / 2, self.pos_y - l_height / 2))
+        self.pos_y -= self.speed
