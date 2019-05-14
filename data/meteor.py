@@ -1,10 +1,10 @@
 import pygame
 
-from data.config import W, H, screen, meteor_brown_big, default_move_speed, meteors
+from data.config import H, screen, default_move_speed, meteors, tiny_meteors
 
 
 class Meteor:
-    def __init__(self, surface=meteor_brown_big, pos_x=W/2, pos_y=-50, speed=default_move_speed / 2):
+    def __init__(self, surface, pos_x, pos_y, speed=default_move_speed / 2):
         self.surface = surface
         self.mask = pygame.mask.from_surface(self.surface)
 
@@ -12,13 +12,20 @@ class Meteor:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.speed = speed
-
-    def __new__(cls, *args, **kwargs):
-        return super(Meteor, cls).__new__(cls)
+        self.alive = True
 
     def display(self):
         self.pos_y += self.speed
-        screen.blit(self.surface, (self.pos_x, self.pos_y))
+        if self.alive:
+            screen.blit(self.surface, (self.pos_x, self.pos_y))
+        else:
+            screen.blit(tiny_meteors[0], (self.pos_x, self.pos_y))
+            screen.blit(tiny_meteors[1], (self.pos_x + 45, self.pos_y + 30))
+            screen.blit(tiny_meteors[2], (self.pos_x + 25, self.pos_y + 50))
 
         if self.pos_y > H + self.height:
             meteors.remove(self)
+
+    def collide(self):
+        self.alive = False
+

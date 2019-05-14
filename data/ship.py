@@ -1,6 +1,6 @@
 import pygame
 
-from data.config import W, H, ship_blue, default_move_speed
+from data.config import W, H, ship_blue, default_move_speed, screen
 
 
 class Ship:
@@ -13,5 +13,5 @@ class Ship:
         self.pos_y = pos_y
         self.speed = speed
 
-    def __new__(cls, *args, **kwargs):
-        return super(Ship, cls).__new__(cls)
+    def display(self):
+        screen.blit(self.surface, (self.pos_x, self.pos_y))
