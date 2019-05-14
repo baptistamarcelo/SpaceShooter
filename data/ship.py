@@ -1,10 +1,10 @@
 import pygame
 
-from data.config import W, H, ship_blue, vel
+from data.config import W, H, ship_blue, default_move_speed
 
 
 class Ship:
-    def __init__(self, surface=ship_blue, pos_x=W/2, pos_y=H/1.5, speed=vel):
+    def __init__(self, surface=ship_blue, pos_x=W/2, pos_y=H/1.5, speed=default_move_speed):
         self.surface = surface
         self.mask = pygame.mask.from_surface(self.surface)
 
