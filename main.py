@@ -1,17 +1,14 @@
 import pygame
-import random
 
-from data.config import W, H, laser_blue, laser_blue_impact, clock, FPS, meteors, lasers, \
-    laser_cooldown_max, laser_cooldown_count, laser_cooldown, meteor_spawn_chance, bg_pos_y_1, bg_speed, \
-    player_invulnerability_cooldown_max, ship_blue, meteor_brown_big
-
-from data.laser import Laser
-from data.meteor import Meteor
-from data.ship import Ship
-from data.player import Player
-from data.background import Background
-
-pygame.init()
+from src.background import Background
+from src.config import W, H, laser_blue, clock, FPS, lasers, \
+    laser_cooldown, bg_pos_y_1, bg_speed, \
+    player_invulnerability_cooldown_max, ship_blue, laser_cooldown_max, laser_cooldown_count, meteors, \
+    laser_blue_impact, enemies
+from src.laser import Laser
+from src.player import Player
+from src.ship import Ship
+from src.handler import meteor_handler, check_collision, enemy_handler
 
 pygame.display.set_caption("Space Shooter")
 
@@ -21,14 +18,7 @@ background = Background(bg_pos_y_1, -H, bg_speed)
 game_exit = False
 
 
-def check_collision(obj_1, obj_2):
-    collision_offset = (int(obj_1.pos_x - obj_2.pos_x), int(obj_1.pos_y - obj_2.pos_y))
-    return obj_2.mask.overlap(obj_1.mask, collision_offset)
-
-
 while not game_exit:
-    pygame.time.delay(10)
-
     background.display()
 
     for event in pygame.event.get():
@@ -51,6 +41,8 @@ while not game_exit:
         lasers.append(laser)
         laser_cooldown = True
 
+    meteor_handler()
+
     if laser_cooldown:
         if laser_cooldown_count == laser_cooldown_max:
             laser_cooldown = False
@@ -58,18 +50,20 @@ while not game_exit:
         else:
             laser_cooldown_count += 1
 
-    if random.randint(1, meteor_spawn_chance) == 1:
-        meteor = Meteor(surface=meteor_brown_big, pos_x=W/2, pos_y=-50)
-        meteor.pos_x = random.randint(30, W - meteor.width)
-        meteors.append(meteor)
+    for laser in lasers:
+        for enemy in enemies:
+            if check_collision(enemy.ship, laser):
+                laser.surface = laser_blue_impact
+                enemies.remove(enemy)
+                player.change_score(100)
+                laser.hit = True
+        laser.display()
 
-    for meteor in meteors:
-        meteor.display()
-        if meteor.alive:
-            if check_collision(meteor, player.ship) and not player.invulnerable:
-                player.invulnerable = True
-                meteor.collide()
-                player.change_score(-100)
+    for enemy in enemies:
+        if check_collision(player.ship, enemy.ship) and not player.invulnerable:
+            player.change_score(-100)
+            enemies.remove(enemy)
+            player.invulnerable = True
 
     if player.invulnerable:
         if player.invulnerable_cooldown_count == player_invulnerability_cooldown_max:
@@ -79,21 +73,7 @@ while not game_exit:
         else:
             player.invulnerable_cooldown_count += 1
 
-    for laser in lasers:
-        if laser.pos_y <= 0:
-            lasers.remove(laser)
-        else:
-            for meteor in meteors:
-                if meteor.alive:
-                    offset = (int(laser.pos_x) - int(meteor.pos_x), int(laser.pos_y) - int(meteor.pos_y))
-                    collision_result = meteor.mask.overlap(laser.mask, offset)
-                    if collision_result:
-                        laser.surface = laser_blue_impact
-                        lasers.remove(laser)
-                        meteors.remove(meteor)
-                        player.change_score(100)
-            laser.display()
-
+    enemy_handler()
     player.display()
 
     pygame.display.update()

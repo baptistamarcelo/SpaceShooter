@@ -1,6 +1,6 @@
 import pygame
 
-from data.config import W, H, screen, bg_black
+from src.config import W, H, screen, bg_black
 
 
 class Background:

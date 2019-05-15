@@ -1,6 +1,6 @@
 import pygame
 
-from data.config import screen, H, W, color_white, ship_orange, ship_blue
+from src.config import screen, H, W, color_white, ship_orange, ship_blue
 
 
 class Player:

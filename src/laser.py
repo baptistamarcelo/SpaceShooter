@@ -1,6 +1,6 @@
 import pygame
 
-from data.config import default_move_speed, screen
+from src.config import default_move_speed, screen, lasers
 
 
 class Laser:
@@ -12,9 +12,12 @@ class Laser:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.speed = speed
+        self.hit = False
 
     def display(self):
         old_width = self.width
         l_width, l_height = self.surface.get_size()
         screen.blit(self.surface, (self.pos_x - l_width / 2 + old_width / 2, self.pos_y - l_height / 2))
         self.pos_y -= self.speed
+        if self.pos_y <= 0 or self.hit:
+            lasers.remove(self)
