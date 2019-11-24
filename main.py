@@ -2,7 +2,7 @@ import pygame
 
 from src.background import Background
 from src.config import H, clock, FPS, bg_pos_y_1, bg_speed
-from src.handler import meteor_handler, enemy_handler, input_handler, combat_handler, player_handler
+from src.update import Update
 from src.player import Player
 from src.ship import Ship
 
@@ -11,7 +11,7 @@ pygame.display.set_caption("Space Shooter")
 player = Player("Marcelo", Ship())
 background = Background(bg_pos_y_1, -H, bg_speed)
 game_exit = False
-
+update = Update()
 
 while not game_exit:
     background.display()
@@ -20,11 +20,12 @@ while not game_exit:
         if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or event.type == pygame.QUIT:
             game_exit = True
 
-    input_handler(player)
-    meteor_handler()
-    player_handler(player)
-    combat_handler(player)
-    enemy_handler()
+    update.input(player)
+    update.meteor()
+    update.player(player)
+    update.combat(player)
+    update.enemy()
+
     player.display()
 
     pygame.display.update()
