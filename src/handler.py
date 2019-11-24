@@ -1,8 +1,11 @@
 import random
 
+import pygame
+
 from src.config import brown_meteors, W, meteors, meteor_spawn_chance, enemy_ships, enemies, enemy_spawn_chance, \
-    default_move_speed, max_enemies_on_screen
+    default_move_speed, max_enemies_on_screen, lasers, laser_blue, H
 from src.enemy import Enemy
+from src.laser import Laser
 from src.meteor import Meteor
 from src.ship import Ship
 
@@ -54,3 +57,21 @@ def enemy_handler():
 
     for enemy in enemies:
         enemy.display()
+
+
+def input_handler(player):
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT] and player.ship.pos_x > player.ship.speed:
+        player.ship.pos_x -= player.ship.speed
+    elif keys[pygame.K_RIGHT] and player.ship.pos_x < W - player.ship.width - player.ship.speed:
+        player.ship.pos_x += player.ship.speed
+    if keys[pygame.K_UP] and player.ship.pos_y > player.ship.speed:
+        player.ship.pos_y -= player.ship.speed
+    elif keys[pygame.K_DOWN] and player.ship.pos_y < H - player.ship.height - player.ship.speed:
+        player.ship.pos_y += player.ship.speed
+    if keys[pygame.K_SPACE] and not player.laser_cooldown:
+        laser = Laser(surface=laser_blue, pos_x=player.ship.pos_x + (player.ship.width / 2), pos_y=player.ship.pos_y)
+        laser.pos_x -= (laser.width / 2)  # align laser position to match ship cannon, uses width variable to calculate
+        lasers.append(laser)
+        player.laser_cooldown = True
