@@ -58,7 +58,6 @@ default_move_speed = W * 0.006
 meteors = []
 lasers = []
 enemies = []
-laser_cooldown = False
 max_enemies_on_screen = 8
 FPS = 60
 meteor_spawn_chance = 50  # the lower the number, the higher the chance, 1 = 100%
