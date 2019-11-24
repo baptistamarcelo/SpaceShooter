@@ -59,8 +59,7 @@ meteors = []
 lasers = []
 enemies = []
 laser_cooldown = False
-player_invulnerability_cooldown_max = 80
-max_enemies_on_screen = 5
+max_enemies_on_screen = 8
 FPS = 60
 meteor_spawn_chance = 50  # the lower the number, the higher the chance, 1 = 100%
 enemy_spawn_chance = 100  # the lower the number, the higher the chance, 1 = 100%

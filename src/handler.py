@@ -3,7 +3,7 @@ import random
 import pygame
 
 from src.config import brown_meteors, W, meteors, meteor_spawn_chance, enemy_ships, enemies, enemy_spawn_chance, \
-    default_move_speed, max_enemies_on_screen, lasers, laser_blue, H
+    default_move_speed, max_enemies_on_screen, lasers, laser_blue, H, laser_blue_impact, ship_blue
 from src.enemy import Enemy
 from src.laser import Laser
 from src.meteor import Meteor
@@ -75,3 +75,37 @@ def input_handler(player):
         laser.pos_x -= (laser.width / 2)  # align laser position to match ship cannon, uses width variable to calculate
         lasers.append(laser)
         player.laser_cooldown = True
+
+
+def player_handler(player):
+    if player.laser_cooldown:
+        if player.laser_cooldown_count == player.laser_cooldown_max:
+            player.laser_cooldown = False
+            player.laser_cooldown_count = 0
+        else:
+            player.laser_cooldown_count += 1
+
+    if player.invulnerable:
+        if player.invulnerable_cooldown_count == player.invulnerability_cooldown_max:
+            player.invulnerable = False
+            player.invulnerable_cooldown_count = 0
+            player.ship.surface = ship_blue
+        else:
+            player.invulnerable_cooldown_count += 1
+
+
+def combat_handler(player):
+    for laser in lasers:
+        for enemy in enemies:
+            if check_collision(enemy.ship, laser):
+                laser.surface = laser_blue_impact
+                enemies.remove(enemy)
+                player.change_score(100)
+                laser.hit = True
+        laser.display()
+
+    for enemy in enemies:
+        if check_collision(player.ship, enemy.ship) and not player.invulnerable:
+            player.lives -= 1
+            enemies.remove(enemy)
+            player.invulnerable = True
