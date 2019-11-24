@@ -2,8 +2,8 @@ import pygame
 
 from src.background import Background
 from src.config import W, H, laser_blue, clock, FPS, lasers, \
-    laser_cooldown, bg_pos_y_1, bg_speed, \
-    player_invulnerability_cooldown_max, ship_blue, laser_cooldown_max, laser_cooldown_count, meteors, \
+    bg_pos_y_1, bg_speed, \
+    player_invulnerability_cooldown_max, ship_blue, meteors, \
     laser_blue_impact, enemies
 from src.laser import Laser
 from src.player import Player
@@ -35,20 +35,20 @@ while not game_exit:
         player.ship.pos_y -= player.ship.speed
     elif keys[pygame.K_DOWN] and player.ship.pos_y < H - player.ship.height - player.ship.speed:
         player.ship.pos_y += player.ship.speed
-    if keys[pygame.K_SPACE] and not laser_cooldown:
+    if keys[pygame.K_SPACE] and not player.laser_cooldown:
         laser = Laser(surface=laser_blue, pos_x=player.ship.pos_x + (player.ship.width / 2), pos_y=player.ship.pos_y)
         laser.pos_x -= (laser.width / 2)  # align laser position to match ship cannon, uses width variable to calculate
         lasers.append(laser)
-        laser_cooldown = True
+        player.laser_cooldown = True
 
     meteor_handler()
 
-    if laser_cooldown:
-        if laser_cooldown_count == laser_cooldown_max:
-            laser_cooldown = False
-            laser_cooldown_count = 0
+    if player.laser_cooldown:
+        if player.laser_cooldown_count == player.laser_cooldown_max:
+            player.laser_cooldown = False
+            player.laser_cooldown_count = 0
         else:
-            laser_cooldown_count += 1
+            player.laser_cooldown_count += 1
 
     for laser in lasers:
         for enemy in enemies:

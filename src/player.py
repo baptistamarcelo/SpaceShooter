@@ -12,6 +12,9 @@ class Player:
         self.invulnerable = False
         self.invulnerable_cooldown_count = 60
         self.lives = 3
+        self.laser_cooldown = False
+        self.laser_cooldown_count = 0
+        self.laser_cooldown_max = 30
 
     def change_score(self, points):
         self.score += points * self.score_multiplier
