@@ -11,11 +11,14 @@ class Player:
         self.score_multiplier = 1
         self.invulnerable = False
         self.invulnerable_cooldown_count = 60
+        self.lives = 3
 
     def change_score(self, points):
         self.score += points * self.score_multiplier
 
     def display(self):
+        if self.lives <= 0:
+            self.game_over()
         if self.invulnerable:
             if self.invulnerable_cooldown_count % 5 == 0:
                 self.ship.surface = ship_blue
@@ -23,6 +26,10 @@ class Player:
                 self.ship.surface = ship_orange
 
         font = pygame.font.SysFont('arial', 30)
-        text = font.render(self.name + ": " + str(self.score), False, color_white)
+        text = font.render("Player: " + self.name + " Score: " + str(self.score) + " Lives: " + str(self.lives), False, color_white)
         screen.blit(text, pygame.Rect(10, H / 1.08, W / 5, H / 5))
         self.ship.display()
+
+    def game_over(self):
+        print("Game over, score: {}".format(self.score))
+        exit(0)

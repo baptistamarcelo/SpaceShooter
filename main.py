@@ -61,7 +61,7 @@ while not game_exit:
 
     for enemy in enemies:
         if check_collision(player.ship, enemy.ship) and not player.invulnerable:
-            player.change_score(-100)
+            player.lives -= 1
             enemies.remove(enemy)
             player.invulnerable = True
 

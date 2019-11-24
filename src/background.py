@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import W, H, screen, bg_black
+from src.config import W, H, screen, bg_black, color_black
 
 
 class Background:
@@ -12,13 +12,14 @@ class Background:
         self.surface = pygame.transform.scale(surface, (W, H))
 
     def display(self):
+        screen.fill(color_black)  # disabling blit on transformed image due to performance issues
         self.pos_y_1 += self.speed
         self.pos_y_2 += self.speed
-
-        screen.blit(self.surface, (0, self.pos_y_1))
-        screen.blit(self.surface, (0, self.pos_y_2))
-
-        if self.pos_y_1 > H:
-            self.pos_y_1 = -H
-        if self.pos_y_2 > H:
-            self.pos_y_2 = -H
+    #
+    #     screen.blit(self.surface, (0, self.pos_y_1))
+    #     screen.blit(self.surface, (0, self.pos_y_2))
+    #
+    #     if self.pos_y_1 > H:
+    #         self.pos_y_1 = -H
+    #     if self.pos_y_2 > H:
+    #         self.pos_y_2 = -H

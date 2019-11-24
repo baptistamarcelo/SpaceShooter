@@ -54,15 +54,15 @@ bg_speed = W * 0.003
 clock = pygame.time.Clock()
 color_black = (0, 0, 0)
 color_white = (255, 255, 255)
-default_move_speed = W * 0.004
+default_move_speed = W * 0.006
 meteors = []
 lasers = []
 enemies = []
-laser_cooldown_max = 40
+laser_cooldown_max = 30
 laser_cooldown_count = 0
 laser_cooldown = False
 player_invulnerability_cooldown_max = 80
 max_enemies_on_screen = 5
-FPS = 120
-meteor_spawn_chance = 60  # the lower the number, the higher the chance, 1 = 100%
-enemy_spawn_chance = 120  # the lower the number, the higher the chance, 1 = 100%
+FPS = 60
+meteor_spawn_chance = 50  # the lower the number, the higher the chance, 1 = 100%
+enemy_spawn_chance = 100  # the lower the number, the higher the chance, 1 = 100%
