@@ -32,9 +32,6 @@ screen = pygame.display.set_mode((W, H))
 ship_blue = load_image(png_dir + 'playerShip1_blue.png')
 ship_orange = load_image(png_dir + 'playerShip1_orange.png')
 
-bg_black = load_image('assets/Backgrounds/black.png')
-bg_blue = load_image('assets/Backgrounds/blue.png')
-bg_purple = load_image('assets/Backgrounds/purple.png')
 bg_space = pygame.image.load('assets/Backgrounds/space.png').convert()
 
 meteor_brown_big_1 = load_image(png_dir + 'Meteors/meteorBrown_big1.png')
