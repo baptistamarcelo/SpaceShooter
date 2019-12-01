@@ -1,7 +1,7 @@
 import pygame
 
 from src.background import Background
-from src.config import H, clock, FPS, bg_pos_y_1, bg_speed, music_1
+from src.config import H, clock, FPS, bg_pos_y_1, bg_speed, music_1, bg_space
 from src.update import Update
 from src.player import Player
 from src.ship import Ship
@@ -9,7 +9,7 @@ from src.ship import Ship
 pygame.display.set_caption("Space Shooter")
 
 player = Player("Marcelo", Ship())
-background = Background(bg_pos_y_1, -H, bg_speed)
+background = Background(pos_y_1=bg_pos_y_1, pos_y_2=-H, speed=bg_speed, pos_x=0, surface=bg_space)
 game_exit = False
 update = Update()
 
