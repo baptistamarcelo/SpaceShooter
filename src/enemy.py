@@ -1,6 +1,7 @@
 import random
 
-from src.config import enemies, H, W
+from src.config import enemies, H, W, lasers, laser_red, default_move_speed
+from src.laser import Laser
 
 
 class Enemy:
@@ -8,11 +9,21 @@ class Enemy:
         self.ship = ship
         self.hit = False
         self.difficulty = difficulty
+        difficulty_modifier = {"easy": {"speed": 0.2, "laser_cooldown_max": 200},
+                               "normal": {"speed": 0.4, "laser_cooldown_max": 150},
+                               "hard": {"speed": 0.6, "laser_cooldown_max": 100}
+                               }
+
         self.speed_x = 0
         self.speed_y = 0
         self.move_cooldown_x = None
         self.move_cooldown_y = None
         self.reset_move_cooldown()
+        self.laser_cooldown = False
+        self.laser_cooldown_count = 0
+
+        self.ship.speed = default_move_speed * difficulty_modifier[self.difficulty]['speed']
+        self.laser_cooldown_max = difficulty_modifier[self.difficulty]['laser_cooldown_max']
 
     def display(self):
         self.move()
@@ -24,7 +35,7 @@ class Enemy:
     def reset_move_cooldown(self):
         cooldown = {'active': False,
                     'count': 0,
-                    'max': 1000}
+                    'max': 500}
         self.move_cooldown_x = cooldown
         self.move_cooldown_y = cooldown
 
@@ -66,3 +77,21 @@ class Enemy:
             else:
                 if self.ship.pos_y > 0 + self.ship.height:
                     self.speed_y = -1
+
+    def check_fire(self):
+        chance_of_firing = {
+            "easy": 1,
+            "normal": 2,
+            "hard": 3
+        }
+        if random.randint(0, 7) <= chance_of_firing[self.difficulty] and not self.laser_cooldown:
+            self.shoot()
+
+    def shoot(self):
+        laser = Laser(surface=laser_red,
+                      owner="enemy",
+                      pos_x=self.ship.pos_x + (self.ship.width / 2),
+                      pos_y=self.ship.pos_y + self.ship.height,
+                      speed=default_move_speed * -1)
+        lasers.append(laser)
+        self.laser_cooldown = True

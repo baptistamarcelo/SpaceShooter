@@ -37,3 +37,7 @@ class Player:
     def game_over(self):
         print("Game over, score: {}".format(self.score))
         exit(0)
+
+    def damaged(self):
+        self.lives -= 1
+        self.invulnerable = True

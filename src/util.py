@@ -27,10 +27,10 @@ def spawn_meteor():
 
 
 def spawn_enemy():
-    enemy_surface = enemy_ships[random.randint(0, len(enemy_ships) - 1)]
+    difficulty_choice = random.choice(["easy", "normal", "hard"])
+    enemy_surface = random.choice(enemy_ships[difficulty_choice])
     enemy_ship = Ship(surface=enemy_surface)
-    enemy = Enemy(ship=enemy_ship, difficulty=random.choice(["easy", "medium", "hard"]))
-    enemy.ship.pos_y = 1 - enemy.ship.height
+    enemy = Enemy(ship=enemy_ship, difficulty=difficulty_choice)
+    enemy.ship.pos_y = 1 - int(enemy.ship.height / 2)
     enemy.ship.pos_x = random.randint(30, W - enemy.ship.width)
-    enemy.ship.speed = default_move_speed * 0.3
     return enemy

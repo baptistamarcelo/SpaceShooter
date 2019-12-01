@@ -10,6 +10,15 @@ def load_image(file_name):
     return pygame.image.load(file_name).convert_alpha()
 
 
+def load_enemies(color):
+    enemy_list = []
+    for number in range(1, 6):
+        value = "Enemies/enemy{}{}.png".format(color, number)
+        surface = load_image(png_dir + value)
+        enemy_list.append(surface)
+    return enemy_list
+
+
 # screen configs
 display_info = pygame.display.Info()
 W = int(display_info.current_w * 0.75)
@@ -21,10 +30,8 @@ screen = pygame.display.set_mode((W, H))
 # assets
 ship_blue = load_image(png_dir + 'playerShip1_blue.png')
 ship_orange = load_image(png_dir + 'playerShip1_orange.png')
-enemy_black_1 = load_image(png_dir + 'Enemies/enemyBlack1.png')
-enemy_black_2 = load_image(png_dir + 'Enemies/enemyBlack2.png')
-enemy_red_1 = load_image(png_dir + 'Enemies/enemyRed1.png')
-enemy_red_2 = load_image(png_dir + 'Enemies/enemyRed2.png')
+
+
 bg_black = load_image('assets/Backgrounds/black.png')
 bg_blue = load_image('assets/Backgrounds/blue.png')
 bg_purple = load_image('assets/Backgrounds/purple.png')
@@ -42,11 +49,13 @@ meteor_tiny_2 = load_image(png_dir + 'Meteors/meteorGrey_small2.png')
 meteor_tiny_3 = load_image(png_dir + 'Meteors/meteorGrey_tiny1.png')
 laser_blue = load_image(png_dir + 'Lasers/laserBlue07.png')
 laser_blue_impact = load_image(png_dir + 'Lasers/laserBlue08.png')
+laser_red = load_image(png_dir + 'Lasers/laserRed07.png')
+laser_red_impact = load_image(png_dir + 'Lasers/laserRed08.png')
 
 tiny_grey_meteors = [meteor_tiny_1, meteor_tiny_2, meteor_tiny_3]
 brown_meteors = [meteor_brown_big_1, meteor_brown_big_2, meteor_brown_big_3, meteor_brown_big_4, meteor_brown_med_1,
                  meteor_brown_med_3, meteor_brown_small_1, meteor_brown_small_2]
-enemy_ships = [enemy_black_1, enemy_black_2, enemy_red_1, enemy_red_2]
+enemy_ships = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
 
 # game variables
 bg_pos_y_1 = 0
@@ -60,5 +69,5 @@ lasers = []
 enemies = []
 max_enemies_on_screen = 8
 FPS = 60
-meteor_spawn_chance = 50  # the lower the number, the higher the chance, 1 = 100%
+meteor_spawn_chance = 30  # the lower the number, the higher the chance, 1 = 100%
 enemy_spawn_chance = 100  # the lower the number, the higher the chance, 1 = 100%
