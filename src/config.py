@@ -4,6 +4,7 @@ pygame.init()
 
 png_dir = 'assets/PNG/'
 bg_dir = 'assets/Backgrounds/'
+snd_dir = 'assets/Sound/'
 
 
 def load_image(file_name):
@@ -31,7 +32,6 @@ screen = pygame.display.set_mode((W, H))
 ship_blue = load_image(png_dir + 'playerShip1_blue.png')
 ship_orange = load_image(png_dir + 'playerShip1_orange.png')
 
-
 bg_black = load_image('assets/Backgrounds/black.png')
 bg_blue = load_image('assets/Backgrounds/blue.png')
 bg_purple = load_image('assets/Backgrounds/purple.png')
@@ -56,6 +56,16 @@ tiny_grey_meteors = [meteor_tiny_1, meteor_tiny_2, meteor_tiny_3]
 brown_meteors = [meteor_brown_big_1, meteor_brown_big_2, meteor_brown_big_3, meteor_brown_big_4, meteor_brown_med_1,
                  meteor_brown_med_3, meteor_brown_small_1, meteor_brown_small_2]
 enemy_ships = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
+
+# sounds
+
+music_1 = pygame.mixer.music.load(snd_dir + 'music/Battle in the Stars.ogg')
+music_2 = pygame.mixer.music.load(snd_dir + 'music/Alone Against Enemy.ogg')
+
+player_laser_sound = pygame.mixer.Sound(snd_dir + 'sfx_laser2.ogg')
+enemy_laser_sound = pygame.mixer.Sound(snd_dir + 'sfx_laser1.ogg')
+impact_1 = pygame.mixer.Sound(snd_dir + 'impact_1.ogg')
+impact_2 = pygame.mixer.Sound(snd_dir + 'impact_2.ogg')
 
 # game variables
 bg_pos_y_1 = 0

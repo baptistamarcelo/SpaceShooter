@@ -3,7 +3,7 @@ import random
 import pygame
 
 from src.config import W, meteors, meteor_spawn_chance, enemies, enemy_spawn_chance, \
-    max_enemies_on_screen, lasers, laser_blue, H, laser_blue_impact, ship_blue, laser_red_impact
+    max_enemies_on_screen, lasers, laser_blue, H, laser_blue_impact, ship_blue, laser_red_impact, impact_2
 from src.laser import Laser
 from src.util import check_collision, spawn_meteor, spawn_enemy
 
@@ -72,6 +72,7 @@ class Update:
         for laser in lasers:
             for enemy in enemies:
                 if laser.owner == "player" and check_collision(enemy.ship, laser):
+                    impact_2.play()
                     laser.surface = laser_blue_impact
                     enemies.remove(enemy)
                     player.change_score(100)
@@ -88,7 +89,6 @@ class Update:
 
             if check_collision(player.ship, enemy.ship) and not player.invulnerable:
                 player.damaged()
-
                 enemies.remove(enemy)
 
             if enemy.laser_cooldown:

@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import screen, H, W, color_white, ship_orange, ship_blue
+from src.config import screen, H, W, color_white, ship_orange, ship_blue, impact_1
 
 
 class Player:
@@ -41,3 +41,4 @@ class Player:
     def damaged(self):
         self.lives -= 1
         self.invulnerable = True
+        impact_1.play()

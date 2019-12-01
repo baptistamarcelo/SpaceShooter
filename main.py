@@ -1,7 +1,7 @@
 import pygame
 
 from src.background import Background
-from src.config import H, clock, FPS, bg_pos_y_1, bg_speed
+from src.config import H, clock, FPS, bg_pos_y_1, bg_speed, music_1
 from src.update import Update
 from src.player import Player
 from src.ship import Ship
@@ -12,6 +12,10 @@ player = Player("Marcelo", Ship())
 background = Background(bg_pos_y_1, -H, bg_speed)
 game_exit = False
 update = Update()
+
+music = music_1
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(-1)
 
 while not game_exit:
     background.display()

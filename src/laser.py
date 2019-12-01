@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import default_move_speed, screen, lasers, H
+from src.config import default_move_speed, screen, lasers, H, player_laser_sound, enemy_laser_sound
 
 
 class Laser:
@@ -14,6 +14,12 @@ class Laser:
         self.pos_y = pos_y
         self.speed = speed
         self.hit = False
+
+        if self.owner == 'player':
+            self.sound = player_laser_sound
+        elif self.owner == 'enemy':
+            self.sound = enemy_laser_sound
+        self.sound.play()
 
     def display(self):
         old_width = self.width
