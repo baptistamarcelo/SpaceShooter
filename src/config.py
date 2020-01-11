@@ -20,17 +20,28 @@ def load_enemies(color):
     return enemy_list
 
 
+def load_numbers():
+    _numbers = {}
+    for number in range(10):
+        _numbers[str(number)] = load_image(png_dir + 'UI/numeral{}.png'.format(number))
+
+    return _numbers
+
+
 # screen configs
 display_info = pygame.display.Info()
-W = int(display_info.current_w * 0.75)
-H = int(display_info.current_h * 0.75)
+screen_width = int(display_info.current_w * 0.75)
+W = screen_width
+screen_height = int(display_info.current_h * 0.75)
+H = int(screen_height * 0.9)
 HW = W / 2
 HH = H / 2
-screen = pygame.display.set_mode((W, H))
+screen = pygame.display.set_mode((screen_width, screen_height))
 
 # assets
 ship_blue = load_image(png_dir + 'playerShip1_blue.png')
 ship_orange = load_image(png_dir + 'playerShip1_orange.png')
+life_blue = load_image(png_dir + 'UI/playerLife1_blue.png')
 
 bg_space = pygame.image.load('assets/Backgrounds/space.png').convert()
 
@@ -55,6 +66,8 @@ tiny_grey_meteors = [meteor_tiny_1, meteor_tiny_2, meteor_tiny_3]
 brown_meteors = [meteor_brown_big_1, meteor_brown_big_2, meteor_brown_big_3, meteor_brown_big_4, meteor_brown_med_1,
                  meteor_brown_med_3, meteor_brown_small_1, meteor_brown_small_2]
 enemy_ships = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
+
+numbers = load_numbers()
 
 # sounds
 

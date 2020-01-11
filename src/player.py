@@ -1,6 +1,4 @@
-import pygame
-
-from src.config import screen, H, W, color_white, ship_orange, ship_blue, impact_1
+from src.config import ship_orange, ship_blue, impact_1
 
 
 class Player:
@@ -28,10 +26,6 @@ class Player:
                 self.ship.surface = ship_blue
             else:
                 self.ship.surface = ship_orange
-
-        font = pygame.font.SysFont('arial', 30)
-        text = font.render("Player: " + self.name + " Score: " + str(self.score) + " Lives: " + str(self.lives), False, color_white)
-        screen.blit(text, pygame.Rect(10, H / 1.08, W / 5, H / 5))
         self.ship.display()
 
     def game_over(self):
