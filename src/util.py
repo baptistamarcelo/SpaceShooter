@@ -3,9 +3,10 @@ import pygame
 
 from src.config import brown_meteors, W, meteors, enemy_ships, numbers, color_white, screen, \
     color_black, H, life_blue
-from src.enemy import Enemy
-from src.meteor import Meteor
-from src.ship import Ship
+from src.entities.enemy import Enemy
+from src.entities.item import Item
+from src.entities.meteor import Meteor
+from src.entities.ship import Ship
 
 
 def check_collision(obj_1, obj_2):
@@ -36,6 +37,10 @@ def spawn_enemy():
     enemy.ship.pos_y = 1 - int(enemy.ship.height / 2)
     enemy.ship.pos_x = random.randint(30, W - enemy.ship.width)
     return enemy
+
+
+def spawn_item(meteor):
+    return Item(pos_x=meteor.pos_x, pos_y=meteor.pos_y)
 
 
 def display_ui(player):

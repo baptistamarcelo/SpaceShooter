@@ -42,6 +42,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 ship_blue = load_image(png_dir + 'playerShip1_blue.png')
 ship_orange = load_image(png_dir + 'playerShip1_orange.png')
 life_blue = load_image(png_dir + 'UI/playerLife1_blue.png')
+shield_1 = load_image(png_dir + 'Effects/shield1.png')
 
 bg_space = pygame.image.load('assets/Backgrounds/space.png').convert()
 
@@ -51,21 +52,26 @@ meteor_brown_big_3 = load_image(png_dir + 'Meteors/meteorBrown_big3.png')
 meteor_brown_big_4 = load_image(png_dir + 'Meteors/meteorBrown_big4.png')
 meteor_brown_med_1 = load_image(png_dir + 'Meteors/meteorBrown_med1.png')
 meteor_brown_med_3 = load_image(png_dir + 'Meteors/meteorBrown_med3.png')
-meteor_brown_small_1 = load_image(png_dir + 'Meteors/meteorBrown_small1.png')
-meteor_brown_small_2 = load_image(png_dir + 'Meteors/meteorBrown_small2.png')
+# meteor_brown_small_1 = load_image(png_dir + 'Meteors/meteorBrown_small1.png')
+# meteor_brown_small_2 = load_image(png_dir + 'Meteors/meteorBrown_small2.png')
 
-meteor_tiny_1 = load_image(png_dir + 'Meteors/meteorGrey_small1.png')
-meteor_tiny_2 = load_image(png_dir + 'Meteors/meteorGrey_small2.png')
-meteor_tiny_3 = load_image(png_dir + 'Meteors/meteorGrey_tiny1.png')
+# meteor_tiny_1 = load_image(png_dir + 'Meteors/meteorGrey_small1.png')
+# meteor_tiny_2 = load_image(png_dir + 'Meteors/meteorGrey_small2.png')
+# meteor_tiny_3 = load_image(png_dir + 'Meteors/meteorGrey_tiny1.png')
 laser_blue = load_image(png_dir + 'Lasers/laserBlue07.png')
 laser_blue_impact = load_image(png_dir + 'Lasers/laserBlue08.png')
 laser_red = load_image(png_dir + 'Lasers/laserRed07.png')
 laser_red_impact = load_image(png_dir + 'Lasers/laserRed08.png')
 
-tiny_grey_meteors = [meteor_tiny_1, meteor_tiny_2, meteor_tiny_3]
+item_power_up = load_image(png_dir + 'Power-ups/powerupBlue_bolt.png')
+item_shield = load_image(png_dir + 'Power-ups/powerupGreen_shield.png')
+# item_invulnerable = load_image(png_dir + 'Power-ups/powerupYellow_star.png') - maybe implement later, not sure yet
+
+# tiny_grey_meteors = [meteor_tiny_1, meteor_tiny_2, meteor_tiny_3]
 brown_meteors = [meteor_brown_big_1, meteor_brown_big_2, meteor_brown_big_3, meteor_brown_big_4, meteor_brown_med_1,
-                 meteor_brown_med_3, meteor_brown_small_1, meteor_brown_small_2]
+                 meteor_brown_med_3]
 enemy_ships = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
+available_items = [{"power_up": item_power_up}, {"shield": item_shield}]
 
 numbers = load_numbers()
 
@@ -79,6 +85,9 @@ enemy_laser_sound = pygame.mixer.Sound(snd_dir + 'sfx_laser1.ogg')
 impact_1 = pygame.mixer.Sound(snd_dir + 'impact_1.ogg')
 impact_2 = pygame.mixer.Sound(snd_dir + 'impact_2.ogg')
 
+power_up_sound = pygame.mixer.Sound(snd_dir + 'sfx_twoTone.ogg')
+shield_up_sound = pygame.mixer.Sound(snd_dir + 'sfx_shieldUp.ogg')
+
 # game variables
 bg_pos_y_1 = 0
 bg_speed = W * 0.003
@@ -89,7 +98,11 @@ default_move_speed = W * 0.006
 meteors = []
 lasers = []
 enemies = []
-max_enemies_on_screen = 8
+items = []
+max_enemies_on_screen = 20
 FPS = 60
-meteor_spawn_chance = 30  # the lower the number, the higher the chance, 1 = 100%
-enemy_spawn_chance = 100  # the lower the number, the higher the chance, 1 = 100%
+
+# Spawn chance: the lower the number, the higher the chance, 1 = 100%
+meteor_spawn_chance = 200
+enemy_spawn_chance = 50
+item_spawn_chance = 1  # upon meteor destruction through laser - not being used atm as its tied to meteor destruction

@@ -4,7 +4,7 @@ from src.config import H, screen, default_move_speed, meteors
 
 
 class Meteor:
-    def __init__(self, surface, pos_x, pos_y, speed=default_move_speed / 2):
+    def __init__(self, surface, pos_x, pos_y, speed=default_move_speed / 5):
         self.surface = surface
         self.mask = pygame.mask.from_surface(self.surface)
 

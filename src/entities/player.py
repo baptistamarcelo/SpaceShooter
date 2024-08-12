@@ -1,4 +1,5 @@
-from src.config import ship_orange, ship_blue, impact_1
+from src.config import ship_orange, ship_blue, impact_1, shield_up_sound, power_up_sound
+from src.entities.shield import Shield
 
 
 class Player:
@@ -13,7 +14,12 @@ class Player:
         self.laser_cooldown = False
         self.laser_cooldown_count = 0
         self.laser_cooldown_max = 20
-        self.invulnerability_cooldown_max = 80
+        self.invulnerability_cooldown_max = 150
+
+        self.extra_cannons = 0  # on each side of the ship
+        self.max_extra_cannons = 3
+
+        self.shield = None
 
     def change_score(self, points):
         self.score += points * self.score_multiplier
@@ -28,11 +34,25 @@ class Player:
                 self.ship.surface = ship_orange
         self.ship.display()
 
+        if self.shield:
+            self.shield.display()
+
     def game_over(self):
         print("Game over, score: {}".format(self.score))
         exit(0)
 
     def damaged(self):
-        self.lives -= 1
+        if self.shield is None:
+            self.lives -= 1
+        else:
+            self.shield = None
         self.invulnerable = True
         impact_1.play()
+
+    def collect_item(self, item):
+        if item.type == "power_up" and self.extra_cannons < self.max_extra_cannons:
+            self.extra_cannons += 1
+            power_up_sound.play()
+        elif item.type == "shield" and self.shield is None:
+            self.shield = Shield(self.ship)  # ship is what owns the shield, not the player
+            shield_up_sound.play()

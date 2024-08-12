@@ -3,9 +3,10 @@ import random
 import pygame
 
 from src.config import W, meteors, meteor_spawn_chance, enemies, enemy_spawn_chance, \
-    max_enemies_on_screen, lasers, laser_blue, H, laser_blue_impact, ship_blue, laser_red_impact, impact_2
-from src.laser import Laser
-from src.util import check_collision, spawn_meteor, spawn_enemy
+    max_enemies_on_screen, lasers, laser_blue, H, laser_blue_impact, ship_blue, laser_red_impact, impact_2, \
+    items, player_laser_sound
+from src.entities.laser import Laser
+from src.util import check_collision, spawn_meteor, spawn_enemy, spawn_item
 
 
 class Update:
@@ -29,6 +30,11 @@ class Update:
             enemy.display()
 
     @staticmethod
+    def item():
+        for item in items:
+            item.display()
+
+    @staticmethod
     def input(player):
         keys = pygame.key.get_pressed()
 
@@ -41,13 +47,35 @@ class Update:
         elif keys[pygame.K_DOWN] and player.ship.pos_y < H - player.ship.height - player.ship.speed:
             player.ship.pos_y += player.ship.speed
         if keys[pygame.K_SPACE] and not player.laser_cooldown:
+            player_laser_sound.play()
+            ship_middle_pos = player.ship.pos_x + (player.ship.width / 2)
+
+            #  standard cannon always fire
             laser = Laser(surface=laser_blue,
                           owner="player",
-                          pos_x=player.ship.pos_x + (player.ship.width / 2),
+                          pos_x=ship_middle_pos,
                           pos_y=player.ship.pos_y)
-
             laser.pos_x -= (laser.width / 2)  # align laser position with ship cannon, uses width variable to calculate
             lasers.append(laser)
+
+            #  extra cannons depending on power level
+            if player.extra_cannons:
+                for counter in range(1, player.extra_cannons + 1):
+                    laser = Laser(surface=laser_blue,
+                                  owner="player",
+                                  pos_x=ship_middle_pos + counter * (player.ship.width / 5),
+                                  pos_y=player.ship.pos_y)
+                    laser.pos_x -= (laser.width / 2)  # align laser position with ship cannon, uses width variable to calculate
+                    lasers.append(laser)
+
+                    laser = Laser(surface=laser_blue,
+                                  owner="player",
+                                  pos_x=ship_middle_pos - counter * (player.ship.width / 5),
+                                  pos_y=player.ship.pos_y)
+                    laser.pos_x -= (
+                                laser.width / 2)  # align laser position with ship cannon, uses width variable to calculate
+                    lasers.append(laser)
+
             player.laser_cooldown = True
 
     @staticmethod
@@ -77,7 +105,7 @@ class Update:
                     enemies.remove(enemy)
                     player.change_score(100)
                     laser.hit = True
-                if laser.owner == "enemy" and check_collision(player.ship, laser) and not player.invulnerable:
+                elif laser.owner == "enemy" and check_collision(player.ship, laser) and not player.invulnerable:
                     player.damaged()
 
                     laser.surface = laser_red_impact
@@ -97,3 +125,26 @@ class Update:
                     enemy.laser_cooldown_count = 0
                 else:
                     enemy.laser_cooldown_count += 1
+
+        for meteor in meteors:
+            if check_collision(player.ship, meteor) and not player.invulnerable:
+                player.damaged()
+                meteors.remove(meteor)
+                player.change_score(20)
+            for laser in lasers:
+                if laser.owner == "player" and check_collision(laser, meteor):
+                    try:
+                        meteors.remove(meteor)
+                        items.append(spawn_item(meteor))
+                    except ValueError:
+                        pass  # if multiple lasers hit the same meteor, this avoids multiple items spawning or crashes
+
+                    player.change_score(50)
+                    impact_2.play()
+                    laser.surface = laser_blue_impact
+                    laser.hit = True
+
+        for item in items:
+            if check_collision(player.ship, item):
+                player.collect_item(item)
+                items.remove(item)

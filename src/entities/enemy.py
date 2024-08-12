@@ -1,7 +1,7 @@
 import random
 
-from src.config import enemies, H, W, lasers, laser_red, default_move_speed
-from src.laser import Laser
+from src.config import enemies, H, W, lasers, laser_red, default_move_speed, enemy_laser_sound
+from src.entities.laser import Laser
 
 
 class Enemy:
@@ -88,6 +88,7 @@ class Enemy:
             self.shoot()
 
     def shoot(self):
+        enemy_laser_sound.play()
         laser = Laser(surface=laser_red,
                       owner="enemy",
                       pos_x=self.ship.pos_x + (self.ship.width / 2),

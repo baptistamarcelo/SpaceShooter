@@ -1,10 +1,10 @@
 import pygame
 
-from src.background import Background
+from src.entities.background import Background
 from src.config import clock, FPS, bg_pos_y_1, bg_speed, music_1, bg_space
 from src.update import Update
-from src.player import Player
-from src.ship import Ship
+from src.entities.player import Player
+from src.entities.ship import Ship
 from src.util import display_ui
 
 pygame.display.set_caption("Space Shooter")
@@ -27,6 +27,7 @@ while not game_exit:
 
     update.input(player)
     update.meteor()
+    update.item()
     update.player(player)
     update.combat(player)
     update.enemy()
