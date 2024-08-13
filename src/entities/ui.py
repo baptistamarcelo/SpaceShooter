@@ -1,6 +1,8 @@
+import math
+
 import pygame
 
-from src.config import screen, color_white, H, W, color_black, number_sprites, life_blue
+from src.config import screen, color_white, H, W, color_black, number_sprites, life_blue, clock
 
 
 class Ui:
@@ -29,3 +31,16 @@ class Ui:
             screen.blit(life_blue, (life_position, H * 1.03))
             width, _ = life_blue.get_size()
             life_position += width
+
+        fps_text = font.render(f"FPS: {math.trunc(clock.get_fps())}", False, color_white)
+        screen.blit(fps_text, pygame.Rect(W * 0.15, H * 1.03, W * 0.1, H * 0.1))
+
+        extra_cannons = player.extra_cannons * 2
+        if player.extra_cannons == player.max_extra_cannons:
+            extra_cannons = f"{player.extra_cannons * 2} (MAX)"
+        extra_cannons_text = font.render(f"EXTRA CANNONS: {extra_cannons}", False, color_white)
+        screen.blit(extra_cannons_text, pygame.Rect(W * 0.25, H * 1.03, W * 0.1, H * 0.1))
+
+        shield = "ACTIVE" if player.shield else "INACTIVE"
+        shield_text = font.render(f"SHIELD: {shield}", False, color_white)
+        screen.blit(shield_text, pygame.Rect(W * 0.45, H * 1.03, W * 0.1, H * 0.1))

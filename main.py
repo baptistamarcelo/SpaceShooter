@@ -11,7 +11,7 @@ from src.entities.ship import Ship
 
 pygame.display.set_caption("Space Shooter")
 
-player = Player("Marcelo", Ship())
+player = Player("Player", Ship())
 background = Background(pos_y_1=bg_pos_y_1, speed=bg_speed, pos_x=0, surface=bg_space)
 update = Update()
 
