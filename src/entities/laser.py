@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import default_move_speed, screen, lasers, H
+from src.config import default_move_speed, screen, H, game_state
 
 
 class Laser:
@@ -14,6 +14,8 @@ class Laser:
         self.pos_y = pos_y
         self.speed = speed
         self.hit = False
+        self.pos_x -= (self.width / 2)  # align laser position with ship cannon, uses width variable to calculate
+        game_state.lasers.append(self)
 
     def display(self):
         old_width = self.width
@@ -21,4 +23,4 @@ class Laser:
         screen.blit(self.surface, (self.pos_x - l_width / 2 + old_width / 2, self.pos_y - l_height / 2))
         self.pos_y -= self.speed
         if self.pos_y <= 0 or self.hit or self.pos_y >= H:
-            lasers.remove(self)
+            game_state.lasers.remove(self)

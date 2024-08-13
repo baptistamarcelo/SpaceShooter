@@ -1,5 +1,6 @@
-from src.config import ship_orange, ship_blue, impact_1, shield_up_sound, power_up_sound
+from src.config import ship_orange, ship_blue, impact_1, shield_up_sound, power_up_sound, game_state
 from src.entities.shield import Shield
+from src.entities.ship import Ship
 
 
 class Player:
@@ -26,7 +27,7 @@ class Player:
 
     def display(self):
         if self.lives <= 0:
-            self.game_over()
+            game_state.match = "end"
         if self.invulnerable:
             if self.invulnerable_cooldown_count % 5 == 0:
                 self.ship.surface = ship_blue
@@ -37,10 +38,6 @@ class Player:
         if self.shield:
             self.shield.display()
 
-    def game_over(self):
-        print("Game over, score: {}".format(self.score))
-        exit(0)
-
     def damaged(self):
         if self.shield is None:
             self.lives -= 1
@@ -48,6 +45,9 @@ class Player:
             self.shield = None
         self.invulnerable = True
         impact_1.play()
+
+    def restart(self):
+        self = self.__init__(self.name, Ship())
 
     def collect_item(self, item):
         if item.type == "power_up" and self.extra_cannons < self.max_extra_cannons:

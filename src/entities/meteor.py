@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import H, screen, default_move_speed, meteors
+from src.config import H, screen, default_move_speed, game_state
 
 
 class Meteor:
@@ -18,4 +18,4 @@ class Meteor:
         screen.blit(self.surface, (self.pos_x, self.pos_y))
 
         if self.pos_y > H + self.height:
-            meteors.remove(self)
+            game_state.meteors.remove(self)

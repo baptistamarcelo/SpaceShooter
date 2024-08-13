@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-from src.config import H, screen, default_move_speed, items, available_items
+from src.config import H, screen, default_move_speed, game_state, available_items
 
 
 class Item:
@@ -14,10 +14,11 @@ class Item:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.speed = speed
+        self.pos_x = self.pos_x - self.width / 2  # align item based on the surface size
 
     def display(self):
         self.pos_y += self.speed
         screen.blit(self.surface, (self.pos_x, self.pos_y))
 
         if self.pos_y > H + self.height:
-            items.remove(self)
+            game_state.items.remove(self)

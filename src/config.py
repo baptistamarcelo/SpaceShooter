@@ -28,6 +28,20 @@ def load_numbers():
     return _numbers
 
 
+class GameState:
+    def __init__(self):
+        self.match = "new"
+        self.meteors = []
+        self.lasers = []
+        self.enemies = []
+        self.items = []
+
+    def restart(self):
+        self = self.__init__()
+
+
+game_state = GameState()
+
 # screen configs
 display_info = pygame.display.Info()
 screen_width = int(display_info.current_w * 0.75)
@@ -73,10 +87,9 @@ brown_meteors = [meteor_brown_big_1, meteor_brown_big_2, meteor_brown_big_3, met
 enemy_ships = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
 available_items = [{"power_up": item_power_up}, {"shield": item_shield}]
 
-numbers = load_numbers()
+number_sprites = load_numbers()
 
 # sounds
-
 music_1 = pygame.mixer.music.load(snd_dir + 'music/Battle in the Stars.ogg')
 music_2 = pygame.mixer.music.load(snd_dir + 'music/Alone Against Enemy.ogg')
 
@@ -95,14 +108,10 @@ clock = pygame.time.Clock()
 color_black = (0, 0, 0)
 color_white = (255, 255, 255)
 default_move_speed = W * 0.006
-meteors = []
-lasers = []
-enemies = []
-items = []
-max_enemies_on_screen = 20
+max_enemies_on_screen = 25
 FPS = 60
 
 # Spawn chance: the lower the number, the higher the chance, 1 = 100%
 meteor_spawn_chance = 200
 enemy_spawn_chance = 50
-item_spawn_chance = 1  # upon meteor destruction through laser - not being used atm as its tied to meteor destruction
+item_spawn_chance = 1

@@ -1,6 +1,6 @@
 import random
 
-from src.config import enemies, H, W, lasers, laser_red, default_move_speed, enemy_laser_sound
+from src.config import H, W, laser_red, default_move_speed, enemy_laser_sound, game_state
 from src.entities.laser import Laser
 
 
@@ -9,9 +9,9 @@ class Enemy:
         self.ship = ship
         self.hit = False
         self.difficulty = difficulty
-        difficulty_modifier = {"easy": {"speed": 0.2, "laser_cooldown_max": 200},
+        difficulty_modifier = {"easy":   {"speed": 0.2, "laser_cooldown_max": 200},
                                "normal": {"speed": 0.4, "laser_cooldown_max": 150},
-                               "hard": {"speed": 0.6, "laser_cooldown_max": 100}
+                               "hard":   {"speed": 0.8, "laser_cooldown_max": 100}
                                }
 
         self.speed_x = 0
@@ -28,7 +28,7 @@ class Enemy:
     def display(self):
         self.move()
         if self.ship.pos_y > (H - self.ship.height):
-            enemies.remove(self)
+            game_state.enemies.remove(self)
 
         self.ship.display()
 
@@ -89,10 +89,9 @@ class Enemy:
 
     def shoot(self):
         enemy_laser_sound.play()
-        laser = Laser(surface=laser_red,
-                      owner="enemy",
-                      pos_x=self.ship.pos_x + (self.ship.width / 2),
-                      pos_y=self.ship.pos_y + self.ship.height,
-                      speed=default_move_speed * -1)
-        lasers.append(laser)
+        Laser(surface=laser_red,
+              owner="enemy",
+              pos_x=self.ship.pos_x + (self.ship.width / 2),
+              pos_y=self.ship.pos_y + self.ship.height,
+              speed=default_move_speed * -1)
         self.laser_cooldown = True
