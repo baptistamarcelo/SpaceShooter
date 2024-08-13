@@ -1,6 +1,7 @@
 from src.config import ship_orange, ship_blue, impact_1, shield_up_sound, power_up_sound, game_state
 from src.entities.shield import Shield
 from src.entities.ship import Ship
+from src.util import play_music
 
 
 class Player:
@@ -27,6 +28,7 @@ class Player:
 
     def display(self):
         if self.lives <= 0:
+            play_music('Victory Tune.ogg')
             game_state.match = "end"
         if self.invulnerable:
             if self.invulnerable_cooldown_count % 5 == 0:

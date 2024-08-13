@@ -1,6 +1,6 @@
 import random
 
-from src.config import H, W, laser_red, default_move_speed, enemy_laser_sound, game_state
+from src.config import H, W, laser_red, enemy_laser_sound, game_state
 from src.entities.laser import Laser
 
 
@@ -22,7 +22,7 @@ class Enemy:
         self.laser_cooldown = False
         self.laser_cooldown_count = 0
 
-        self.ship.speed = default_move_speed * difficulty_modifier[self.difficulty]['speed']
+        self.ship.speed = game_state.default_speed * difficulty_modifier[self.difficulty]['speed']
         self.laser_cooldown_max = difficulty_modifier[self.difficulty]['laser_cooldown_max']
 
     def display(self):
@@ -93,5 +93,5 @@ class Enemy:
               owner="enemy",
               pos_x=self.ship.pos_x + (self.ship.width / 2),
               pos_y=self.ship.pos_y + self.ship.height,
-              speed=default_move_speed * -1)
+              speed=game_state.default_speed * -1)
         self.laser_cooldown = True

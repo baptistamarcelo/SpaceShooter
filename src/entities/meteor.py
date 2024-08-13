@@ -1,10 +1,10 @@
 import pygame
 
-from src.config import H, screen, default_move_speed, game_state
+from src.config import H, screen, game_state
 
 
 class Meteor:
-    def __init__(self, surface, pos_x, pos_y, speed=default_move_speed / 5):
+    def __init__(self, surface, pos_x, pos_y, speed=game_state.default_speed / 5):
         self.surface = surface
         self.mask = pygame.mask.from_surface(self.surface)
 

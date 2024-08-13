@@ -10,7 +10,7 @@ class Ui:
     def display(player):
         font = pygame.font.SysFont(None, 40)
 
-        name_text = font.render(player.name + ":", False, color_white)
+        name_text = font.render("Lives: ", False, color_white)
         score_text = font.render("Score: ", False, color_white)
 
         screen.fill(color_white, pygame.Rect(0, H, W, H * 0.01))
@@ -33,14 +33,14 @@ class Ui:
             life_position += width
 
         fps_text = font.render(f"FPS: {math.trunc(clock.get_fps())}", False, color_white)
-        screen.blit(fps_text, pygame.Rect(W * 0.15, H * 1.03, W * 0.1, H * 0.1))
+        screen.blit(fps_text, pygame.Rect(W * 0.20, H * 1.03, W * 0.1, H * 0.1))
 
-        extra_cannons = player.extra_cannons * 2
+        cannons = player.extra_cannons * 2 + 1
         if player.extra_cannons == player.max_extra_cannons:
-            extra_cannons = f"{player.extra_cannons * 2} (MAX)"
-        extra_cannons_text = font.render(f"EXTRA CANNONS: {extra_cannons}", False, color_white)
-        screen.blit(extra_cannons_text, pygame.Rect(W * 0.25, H * 1.03, W * 0.1, H * 0.1))
+            cannons = f"{player.extra_cannons * 2 + 1} (MAX)"
+        extra_cannons_text = font.render(f"CANNONS: {cannons}", False, color_white)
+        screen.blit(extra_cannons_text, pygame.Rect(W * 0.30, H * 1.03, W * 0.1, H * 0.1))
 
         shield = "ACTIVE" if player.shield else "INACTIVE"
         shield_text = font.render(f"SHIELD: {shield}", False, color_white)
-        screen.blit(shield_text, pygame.Rect(W * 0.45, H * 1.03, W * 0.1, H * 0.1))
+        screen.blit(shield_text, pygame.Rect(W * 0.55, H * 1.03, W * 0.1, H * 0.1))

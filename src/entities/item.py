@@ -2,11 +2,11 @@ import random
 
 import pygame
 
-from src.config import H, screen, default_move_speed, game_state, available_items
+from src.config import H, screen, game_state, available_items
 
 
 class Item:
-    def __init__(self, pos_x, pos_y, speed=default_move_speed / 8):
+    def __init__(self, pos_x, pos_y, speed=game_state.default_speed / 8):
         (self.type, self.surface), = random.choice(available_items).items()
         self.mask = pygame.mask.from_surface(self.surface)
 

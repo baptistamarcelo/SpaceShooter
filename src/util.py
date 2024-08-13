@@ -1,7 +1,9 @@
 import random
 
+import pygame
+
 from src.config import brown_meteors, W, enemy_ships, game_state, item_spawn_chance, max_enemies_on_screen, \
-    enemy_spawn_chance, meteor_spawn_chance
+    enemy_spawn_chance, meteor_spawn_chance, snd_dir
 from src.entities.enemy import Enemy
 from src.entities.item import Item
 from src.entities.meteor import Meteor
@@ -44,3 +46,9 @@ def roll_chance_spawn_item(meteor):
     if random.randint(1, item_spawn_chance) == 1:
         pos_x = meteor.pos_x + meteor.width / 2
         game_state.items.append(Item(pos_x=pos_x, pos_y=meteor.pos_y))
+
+
+def play_music(file_path):
+    pygame.mixer.music.load(f"{snd_dir}music/{file_path}")
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(-1)

@@ -30,6 +30,7 @@ def load_numbers():
 
 class GameState:
     def __init__(self):
+        self.default_speed = 10  # the lower the number, the slowest the game will be
         self.match = "new"
         self.meteors = []
         self.lasers = []
@@ -90,9 +91,6 @@ available_items = [{"power_up": item_power_up}, {"shield": item_shield}]
 number_sprites = load_numbers()
 
 # sounds
-music_1 = pygame.mixer.music.load(snd_dir + 'music/Battle in the Stars.ogg')
-music_2 = pygame.mixer.music.load(snd_dir + 'music/Alone Against Enemy.ogg')
-
 player_laser_sound = pygame.mixer.Sound(snd_dir + 'sfx_laser2.ogg')
 enemy_laser_sound = pygame.mixer.Sound(snd_dir + 'sfx_laser1.ogg')
 impact_1 = pygame.mixer.Sound(snd_dir + 'impact_1.ogg')
@@ -103,13 +101,12 @@ shield_up_sound = pygame.mixer.Sound(snd_dir + 'sfx_shieldUp.ogg')
 
 # game variables
 bg_pos_y_1 = 0
-bg_speed = W * 0.003
 clock = pygame.time.Clock()
 color_black = (0, 0, 0)
 color_white = (255, 255, 255)
-default_move_speed = W * 0.006
 max_enemies_on_screen = 25
 FPS = 60
+font = pygame.font.SysFont(None, 30)
 
 # Spawn chance: the lower the number, the higher the chance, 1 = 100%
 meteor_spawn_chance = 200

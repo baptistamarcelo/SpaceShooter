@@ -1,10 +1,10 @@
 import pygame
 
-from src.config import default_move_speed, screen, H, game_state
+from src.config import screen, H, game_state
 
 
 class Laser:
-    def __init__(self, surface, owner, pos_x, pos_y, speed=default_move_speed * 2):
+    def __init__(self, surface, owner, pos_x, pos_y, speed=game_state.default_speed * 2):
         self.surface = surface
         self.mask = pygame.mask.from_surface(self.surface)
         self.owner = owner
