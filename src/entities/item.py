@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-from src.config import H, screen, game_state, available_items
+from src.config import usable_screen_height, screen, game_state, available_items
 
 
 class Item:
@@ -20,5 +20,5 @@ class Item:
         self.pos_y += self.speed
         screen.blit(self.surface, (self.pos_x, self.pos_y))
 
-        if self.pos_y > H + self.height:
+        if self.pos_y > usable_screen_height + self.height:
             game_state.items.remove(self)

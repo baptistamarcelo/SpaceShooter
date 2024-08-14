@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import screen, H, game_state
+from src.config import screen, usable_screen_height, game_state
 
 
 class Laser:
@@ -22,5 +22,5 @@ class Laser:
         l_width, l_height = self.surface.get_size()
         screen.blit(self.surface, (self.pos_x - l_width / 2 + old_width / 2, self.pos_y - l_height / 2))
         self.pos_y -= self.speed
-        if self.pos_y <= 0 or self.hit or self.pos_y >= H:
+        if self.pos_y <= 0 or self.hit or self.pos_y >= usable_screen_height:
             game_state.lasers.remove(self)

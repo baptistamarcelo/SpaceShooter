@@ -1,7 +1,6 @@
 from src.config import ship_orange, ship_blue, impact_1, shield_up_sound, power_up_sound, game_state
 from src.entities.shield import Shield
 from src.entities.ship import Ship
-from src.util import play_music
 
 
 class Player:
@@ -10,6 +9,7 @@ class Player:
         self.ship = ship
         self.score = 0
         self.score_multiplier = 1
+        self.bosses_killed = 0
         self.invulnerable = False
         self.invulnerable_cooldown_count = 60
         self.lives = 3
@@ -25,11 +25,11 @@ class Player:
 
     def change_score(self, points):
         self.score += points * self.score_multiplier
+        game_state.boss_counter_score += points * self.score_multiplier
 
     def display(self):
         if self.lives <= 0:
-            play_music('Victory Tune.ogg')
-            game_state.match = "end"
+            game_state.set_match_state("end")
         if self.invulnerable:
             if self.invulnerable_cooldown_count % 5 == 0:
                 self.ship.surface = ship_blue

@@ -1,7 +1,9 @@
 import pygame
 
-from src.config import W, laser_blue, H, laser_blue_impact, ship_blue, laser_red_impact, impact_2, \
-    player_laser_sound, game_state
+from src.config import usable_screen_width, laser_blue, usable_screen_height, laser_blue_impact, ship_blue, \
+    laser_red_impact, impact_2, \
+    player_laser_sound, game_state, boss_assets, impact_1
+from src.entities.boss import Boss
 from src.entities.laser import Laser
 from src.util import check_collision, roll_chance_spawn_meteor, roll_chance_spawn_enemy, roll_chance_spawn_item
 
@@ -32,14 +34,14 @@ class Update:
 
         for event in pygame.event.get():
             if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or event.type == pygame.QUIT:
-                game_state.match = "quit"
+                game_state.set_match_state("quit")
         if keys[pygame.K_LEFT] and player.ship.pos_x > player.ship.speed:
             player.ship.pos_x -= player.ship.speed
-        elif keys[pygame.K_RIGHT] and player.ship.pos_x < W - player.ship.width - player.ship.speed:
+        elif keys[pygame.K_RIGHT] and player.ship.pos_x < usable_screen_width - player.ship.width - player.ship.speed:
             player.ship.pos_x += player.ship.speed
         if keys[pygame.K_UP] and player.ship.pos_y > player.ship.speed:
             player.ship.pos_y -= player.ship.speed
-        elif keys[pygame.K_DOWN] and player.ship.pos_y < H - player.ship.height - player.ship.speed:
+        elif keys[pygame.K_DOWN] and player.ship.pos_y < usable_screen_height - player.ship.height - player.ship.speed:
             player.ship.pos_y += player.ship.speed
         if keys[pygame.K_SPACE] and not player.laser_cooldown:
             player_laser_sound.play()
@@ -88,9 +90,17 @@ class Update:
         for laser in game_state.lasers:
             for enemy in game_state.enemies:
                 if laser.owner == "player" and check_collision(enemy.ship, laser):
-                    impact_2.play()
                     laser.surface = laser_blue_impact
-                    game_state.enemies.remove(enemy)
+                    if isinstance(enemy, Boss):
+                        enemy.damaged()
+                        if enemy.health <= 0:
+                            impact_1.play()
+                            game_state.set_match_state("running")
+                            game_state.boss_difficulty = None
+                            game_state.enemies.remove(enemy)
+                    else:
+                        impact_2.play()
+                        game_state.enemies.remove(enemy)
                     player.change_score(100)
                     laser.hit = True
                 elif laser.owner == "enemy" and check_collision(player.ship, laser) and not player.invulnerable:
@@ -101,6 +111,14 @@ class Update:
             laser.display()
 
         for enemy in game_state.enemies:
+            if isinstance(enemy, Boss):
+                if enemy.invulnerable_cooldown_count == enemy.invulnerability_cooldown_max:
+                    enemy.invulnerable = False
+                    enemy.invulnerable_cooldown_count = 0
+                    enemy.ship.surface = boss_assets[game_state.boss_difficulty]["ship"]
+                else:
+                    enemy.invulnerable_cooldown_count += 1
+
             enemy.check_fire()
 
             if check_collision(player.ship, enemy.ship) and not player.invulnerable:
@@ -136,3 +154,10 @@ class Update:
             if check_collision(player.ship, item):
                 player.collect_item(item)
                 game_state.items.remove(item)
+
+    @staticmethod
+    def check_boss_battle():
+        if game_state.boss_counter_score > game_state.score_to_spawn_boss:
+            game_state.set_match_state("boss")
+            game_state.clear()
+            game_state.enemies.append(Boss())

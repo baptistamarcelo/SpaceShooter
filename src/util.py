@@ -1,9 +1,6 @@
 import random
 
-import pygame
-
-from src.config import brown_meteors, W, enemy_ships, game_state, item_spawn_chance, max_enemies_on_screen, \
-    enemy_spawn_chance, meteor_spawn_chance, snd_dir
+from src.config import brown_meteors, usable_screen_width, enemy_assets, game_state
 from src.entities.enemy import Enemy
 from src.entities.item import Item
 from src.entities.meteor import Meteor
@@ -16,10 +13,10 @@ def check_collision(obj_1, obj_2):
 
 
 def roll_chance_spawn_meteor():
-    if random.randint(1, meteor_spawn_chance) == 1:
+    if random.randint(1, game_state.meteor_spawn_chance) == 1:
         meteor_surface = brown_meteors[random.randint(0, len(brown_meteors) - 1)]
-        meteor = Meteor(surface=meteor_surface, pos_x=W / 2, pos_y=-50)
-        meteor.pos_x = random.randint(30, W - meteor.width)
+        meteor = Meteor(surface=meteor_surface, pos_x=usable_screen_width / 2, pos_y=-50)
+        meteor.pos_x = random.randint(30, usable_screen_width - meteor.width)
 
         if game_state.meteors:
             latest_meteor = game_state.meteors[-1:][0]
@@ -32,23 +29,17 @@ def roll_chance_spawn_meteor():
 
 
 def roll_chance_spawn_enemy():
-    if len(game_state.enemies) < max_enemies_on_screen and random.randint(1, enemy_spawn_chance) == 1:
-        difficulty_roll = random.choice(["easy", "normal", "hard"])
-        enemy_surface = random.choice(enemy_ships[difficulty_roll])
+    if len(game_state.enemies) < game_state.max_enemies_on_screen and random.randint(1, game_state.enemy_spawn_chance) == 1:
+        difficulty_roll = game_state.boss_difficulty if game_state.boss_difficulty else random.choice(["easy", "normal", "hard"])
+        enemy_surface = random.choice(enemy_assets[difficulty_roll])
         enemy_ship = Ship(surface=enemy_surface)
         enemy = Enemy(ship=enemy_ship, difficulty=difficulty_roll)
         enemy.ship.pos_y = 1 - int(enemy.ship.height / 2)
-        enemy.ship.pos_x = random.randint(30, W - enemy.ship.width)
+        enemy.ship.pos_x = random.randint(30, usable_screen_width - enemy.ship.width)
         game_state.enemies.append(enemy)
 
 
 def roll_chance_spawn_item(meteor):
-    if random.randint(1, item_spawn_chance) == 1:
+    if random.randint(1, game_state.item_spawn_chance) == 1:
         pos_x = meteor.pos_x + meteor.width / 2
         game_state.items.append(Item(pos_x=pos_x, pos_y=meteor.pos_y))
-
-
-def play_music(file_path):
-    pygame.mixer.music.load(f"{snd_dir}music/{file_path}")
-    pygame.mixer.music.set_volume(0.4)
-    pygame.mixer.music.play(-1)

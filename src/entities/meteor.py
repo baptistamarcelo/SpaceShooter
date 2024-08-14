@@ -1,6 +1,6 @@
 import pygame
 
-from src.config import H, screen, game_state
+from src.config import usable_screen_height, screen, game_state
 
 
 class Meteor:
@@ -17,5 +17,5 @@ class Meteor:
         self.pos_y += self.speed
         screen.blit(self.surface, (self.pos_x, self.pos_y))
 
-        if self.pos_y > H + self.height:
+        if self.pos_y > usable_screen_height + self.height:
             game_state.meteors.remove(self)

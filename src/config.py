@@ -1,10 +1,27 @@
 import pygame
 
+from src.exception import InvalidGameStateMatchException
+from src.exception.InvalidGameStateMatchException import InvalidGameStateMatchException
+
 pygame.init()
 
 png_dir = 'assets/PNG/'
 bg_dir = 'assets/Backgrounds/'
 snd_dir = 'assets/Sound/'
+
+# screen configs
+display_info = pygame.display.Info()
+screen_width = int(display_info.current_w * 0.75)
+usable_screen_width = screen_width  # at the moment there is no use case to separate a portion of width
+screen_height = int(display_info.current_h * 0.75)
+usable_screen_height = int(screen_height * 0.9)  # separates portion of screen for the ui
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+
+def play_music(file_path):
+    pygame.mixer.music.load(f"{snd_dir}music/{file_path}")
+    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.play(-1)
 
 
 def load_image(file_name):
@@ -28,6 +45,32 @@ def load_numbers():
     return _numbers
 
 
+boss_assets = {
+    "easy": {
+        "ship": load_image(png_dir + "ufoGreen.png"),
+        "music": "Epic End.ogg"
+    },
+    "normal": {
+        "ship": load_image(png_dir + "ufoRed.png"),
+        "music": "SkyFire (Title Screen).ogg"
+    },
+    "hard": {
+        "ship": load_image(png_dir + "ufoBlack.png"),
+        "music": "DeathMatch (Boss Theme).ogg"
+    }
+}
+
+boss_damaged = load_image(png_dir + "ufoYellow.png")
+
+
+def load_boss():
+    try:
+        game_state.boss_difficulty = next(game_state.bosses)
+    except StopIteration:
+        game_state.bosses = iter(boss_assets.keys())
+        load_boss()
+
+
 class GameState:
     def __init__(self):
         self.default_speed = 10  # the lower the number, the slowest the game will be
@@ -36,22 +79,44 @@ class GameState:
         self.lasers = []
         self.enemies = []
         self.items = []
+        self.bosses = iter(boss_assets.keys())
+        self.boss_difficulty = None
+        self.score_to_spawn_boss = 5000
+        self.boss_counter_score = 0
+        self.meteor_spawn_chance = 200
+        self.enemy_spawn_chance = 50
+        self.item_spawn_chance = 1
+        self.max_enemies_on_screen = 25
 
     def restart(self):
         self = self.__init__()
 
+    def set_match_state(self, new_match_state):
+        self.match = new_match_state
+        if self.match in ["new", "restart"]:
+            play_music('Space Heroes.ogg')
+        elif self.match == "boss":
+            load_boss()
+            play_music(boss_assets[self.boss_difficulty]["music"])
+            game_state.boss_counter_score = 0
+        elif self.match == "running":  # apply original settings to the match
+            play_music('Alone Against Enemy.ogg')
+            self.boss_counter_score = 0
+            self.enemy_spawn_chance = 25
+            self.meteor_spawn_chance = 200
+        elif self.match == "end":
+            play_music('Victory Tune.ogg')
+        elif self.match == "quit":
+            pass
+        else:
+            raise InvalidGameStateMatchException(new_match_state)
+
+    def clear(self):
+        self.enemies.clear()
+        self.lasers.clear()
+
 
 game_state = GameState()
-
-# screen configs
-display_info = pygame.display.Info()
-screen_width = int(display_info.current_w * 0.75)
-W = screen_width
-screen_height = int(display_info.current_h * 0.75)
-H = int(screen_height * 0.9)
-HW = W / 2
-HH = H / 2
-screen = pygame.display.set_mode((screen_width, screen_height))
 
 # assets
 ship_blue = load_image(png_dir + 'playerShip1_blue.png')
@@ -85,7 +150,7 @@ item_shield = load_image(png_dir + 'Power-ups/powerupGreen_shield.png')
 # tiny_grey_meteors = [meteor_tiny_1, meteor_tiny_2, meteor_tiny_3]
 brown_meteors = [meteor_brown_big_1, meteor_brown_big_2, meteor_brown_big_3, meteor_brown_big_4, meteor_brown_med_1,
                  meteor_brown_med_3]
-enemy_ships = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
+enemy_assets = {"easy": load_enemies("Green"), "normal": load_enemies("Red"), "hard": load_enemies("Black")}
 available_items = [{"power_up": item_power_up}, {"shield": item_shield}]
 
 number_sprites = load_numbers()
@@ -104,11 +169,5 @@ bg_pos_y_1 = 0
 clock = pygame.time.Clock()
 color_black = (0, 0, 0)
 color_white = (255, 255, 255)
-max_enemies_on_screen = 25
 FPS = 60
 font = pygame.font.SysFont(None, 30)
-
-# Spawn chance: the lower the number, the higher the chance, 1 = 100%
-meteor_spawn_chance = 200
-enemy_spawn_chance = 50
-item_spawn_chance = 1

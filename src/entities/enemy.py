@@ -1,6 +1,6 @@
 import random
 
-from src.config import H, W, laser_red, enemy_laser_sound, game_state
+from src.config import usable_screen_height, usable_screen_width, laser_red, enemy_laser_sound, game_state
 from src.entities.laser import Laser
 
 
@@ -27,7 +27,7 @@ class Enemy:
 
     def display(self):
         self.move()
-        if self.ship.pos_y > (H - self.ship.height):
+        if self.ship.pos_y > (usable_screen_height - self.ship.height):
             game_state.enemies.remove(self)
 
         self.ship.display()
@@ -48,8 +48,8 @@ class Enemy:
                 if self.ship.pos_x <= 0:
                     self.ship.pos_x = 0 + self.speed_x
                     self.reset_move_cooldown()
-                if self.ship.pos_x >= (W - self.ship.width):
-                    self.ship.pos_x = (W - self.ship.width) - self.speed_x
+                if self.ship.pos_x >= (usable_screen_width - self.ship.width):
+                    self.ship.pos_x = (usable_screen_width - self.ship.width) - self.speed_x
                     self.reset_move_cooldown()
             else:
                 self.reset_move_cooldown()
@@ -72,7 +72,7 @@ class Enemy:
         if move_y == 1:
             self.move_cooldown_y['active'] = True
             move_down = random.randint(0, 1)
-            if move_down and self.ship.pos_y < H * 0.75:
+            if move_down and self.ship.pos_y < usable_screen_height * 0.75:
                 self.speed_y = 1
             else:
                 if self.ship.pos_y > 0 + self.ship.height:
