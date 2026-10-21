@@ -27,7 +27,7 @@ Done when: No lint warnings, no unused imports, code passes flake8/black/isort.
 Dependency: None
 Complexity: M
 32 | ```
-33 | Status: DONE
+55 | Status: IN PROGRESS
 34 | Why: Generate a diverse set of sprites, backgrounds, UI assets, and music using ComfyUI and Ollama.
 35 | Spec: Create a Python script that calls the running ComfyUI API, saves PNGs to assets/PNG, writes assets/manifest.json, and updates config.py to load from the manifest.
 36 | Touches: scripts/generate_assets.py, assets/, src/config.py

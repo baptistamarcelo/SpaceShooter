@@ -2,6 +2,8 @@ import random
 
 from src.config import usable_screen_width, laser_red, enemy_laser_sound, game_state, boss_assets, \
     usable_screen_height, boss_damaged
+from src.entities.particle import Particle
+import random
 from src.entities.laser import Laser
 from src.entities.ship import Ship
 
@@ -56,9 +58,17 @@ class Boss:
         self.ship.display()
 
     def damaged(self):
+        """Called when a player projectile hits the boss.
+
+        The boss becomes temporarily invulnerable after each hit.  When the
+        health reaches zero the :meth:`die` routine is invoked to spawn
+        an explosion and remove the boss from the game state.
+        """
         if not self.invulnerable:
             self.invulnerable = True
             self.health -= 1
+            if self.health <= 0:
+                self.die()
             self.move()
 
     def reset_move_cooldown(self):
@@ -106,3 +116,32 @@ class Boss:
               pos_y=self.ship.pos_y + self.ship.height,
               speed=game_state.default_speed * -1)
         self.laser_cooldown = True
+
+    # ------------------------------------------------------------------
+    #  Death handling
+    # ------------------------------------------------------------------
+    def die(self):
+        """Spawn an explosion and clean up the boss.
+
+        10 particles are emitted from the centre of the boss ship with
+        random velocities.  The boss instance is removed from
+        :data:`game_state.enemies` and the match state is switched back
+        to ``running`` so that normal gameplay continues.
+        """
+        centre_x = self.ship.pos_x + self.ship.width / 2
+        for _ in range(15):
+            vx = random.uniform(-3, 3)
+            vy = random.uniform(-3, 3)
+            particle = Particle(
+                pos_x=centre_x,
+                pos_y=centre_y,
+                velocity=(vx, vy),
+                lifespan=30,
+                radius=4,
+            )
+            # Particles belong in the global particles list, not items
+            game_state.particles.append(particle)
+            game_state.particles.append(particle)
+        if self in game_state.enemies:
+            game_state.enemies.remove(self)
+        game_state.set_match_state("running")

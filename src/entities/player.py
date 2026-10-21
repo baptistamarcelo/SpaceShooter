@@ -22,6 +22,8 @@ class Player:
         self.max_extra_cannons = 3
 
         self.shield = None
+        # Tracks the current active power‑up; ``None`` means no active power‑up
+        self.active_powerup: str | None = None
 
     def change_score(self, points):
         self.score += points * self.score_multiplier
@@ -54,7 +56,9 @@ class Player:
     def collect_item(self, item):
         if item.type == "power_up" and self.extra_cannons < self.max_extra_cannons:
             self.extra_cannons += 1
+            self.active_powerup = "power_up"
             power_up_sound.play()
         elif item.type == "shield" and self.shield is None:
             self.shield = Shield(self.ship)  # ship is what owns the shield, not the player
+            self.active_powerup = "shield"
             shield_up_sound.play()

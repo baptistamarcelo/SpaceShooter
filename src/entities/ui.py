@@ -2,7 +2,19 @@ import math
 
 import pygame
 
-from src.config import screen, color_white, usable_screen_height, usable_screen_width, color_black, number_sprites, life_blue, clock
+from src.config import (
+    screen,
+    color_white,
+    usable_screen_height,
+    usable_screen_width,
+    color_black,
+    number_sprites,
+    life_blue,
+    clock,
+    item_power_up,
+    item_shield,
+    game_state,
+)
 
 
 class Ui:
@@ -16,6 +28,7 @@ class Ui:
         screen.fill(color_white, pygame.Rect(0, usable_screen_height, usable_screen_width, usable_screen_height * 0.01))
         screen.fill(color_black, pygame.Rect(0, usable_screen_height * 1.01, usable_screen_width, usable_screen_height))
 
+        # Score
         screen.blit(score_text, pygame.Rect(usable_screen_width * 0.01, usable_screen_height * 1.03, usable_screen_width * 0.1, usable_screen_height * 0.1))
         score_position = usable_screen_width * 0.1
 
@@ -27,13 +40,26 @@ class Ui:
         width, _ = name_text.get_size()
         life_position = usable_screen_width * 0.90
         screen.blit(name_text, pygame.Rect(life_position - (width + usable_screen_width * 0.01), usable_screen_height * 1.03, usable_screen_width * 0.1, usable_screen_height * 0.1))
+        # Lives and Power‑up icon
         for _ in range(player.lives):
             screen.blit(life_blue, (life_position, usable_screen_height * 1.03))
             width, _ = life_blue.get_size()
             life_position += width
+        # Display active power‑up icon if any
+        if player.active_powerup:
+            screen.blit(item_power_up if player.active_powerup == "power_up" else item_shield, (life_position + 5, usable_screen_height * 1.03))
+            life_position += 30
 
+        # FPS counter
         fps_text = font.render(f"FPS: {math.trunc(clock.get_fps())}", False, color_white)
         screen.blit(fps_text, pygame.Rect(usable_screen_width * 0.20, usable_screen_height * 1.03, usable_screen_width * 0.1, usable_screen_height * 0.1))
+
+        # Render particles
+        for particle in list(game_state.particles):
+            particle.update()
+            particle.draw()
+            if particle.lifespan <= 0:
+                game_state.particles.remove(particle)
 
         cannons = player.extra_cannons * 2 + 1
         if player.extra_cannons == player.max_extra_cannons:
