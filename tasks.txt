@@ -19,7 +19,7 @@ branching.
 
 ### T1 – Project Audit & Clean‑up
 ```
-Status: TODO
+Status: DONE
 Why: Ensure the code base is clean, follows style guidelines, and removes dead code.
 Spec: Run linting tools, remove unused imports, refactor duplicated logic, and add missing ``__init__`` files.
 Touches: src/, tests/
