@@ -1,0 +1,55 @@
+## BUILD_PLAN – 2‑D Space‑Shooter “Space‑Shooter”
+
+This file lists all high‑level tasks required to transform the current
+prototype into a full‑featured, clean, and well‑tested 2‑D space shooter.
+
+---
+
+### Phase 1 – Project Audit & Clean‑up
+1. Run `flake8`, `black`, `isort` to enforce PEP‑8.
+2. Search for unused imports/functions (`search_codebase` for `unused`, `__main__`).
+3. Refactor duplicate logic (collision, spawn).
+4. Add `__init__` files to sub‑modules if missing.
+5. Create `requirements.txt` and a `pyproject.toml` that pins Pygame, pytest, etc.
+6. Add a `README.md` template with build/test instructions.
+
+### Phase 2 – Asset Generation Pipeline
+1. Design a ComfyUI workflow for sprites, backgrounds, UI, and music.
+2. Write `scripts/generate_assets.py` that calls ComfyUI/Ollama API, saves PNGs, writes `assets/manifest.json`.
+3. Update `src/config.py` to load assets from the manifest.
+4. Add `make assets` or a Python command to generate assets in CI.
+
+### Phase 3 – Core Engine Refactor
+1. Create `GameEngine` class that owns the main loop.
+2. Introduce a generic `Entity` base class.
+3. Replace `util.check_collision` with a collision manager.
+4. Abstract enemy AI into strategy classes.
+5. Create a `Level` class for backgrounds and spawn schedules.
+
+### Phase 4 – Gameplay Enhancements
+1. Implement dynamic difficulty scaling.
+2. Add new power‑ups (speed boost, rapid fire, shield regen).
+3. Design boss AI with multiple attack waves.
+4. Create 5–10 parallax maps.
+5. Implement a responsive HUD (score, lives, power‑up icon, timer).
+
+### Phase 5 – Audio & Visual Polish
+1. Load music per level, fade transitions.
+2. Add sound cues for power‑up, shield, damage, boss defeat.
+3. Add particle effects for explosions.
+4. Optimize assets (8‑bit PNG, correct alpha).
+
+### Phase 6 – Test Pyramid
+- **Unit (≈70 %)** – test collision, entities, asset loading.
+- **Integration (≈20 %)** – test GameState transitions, Engine loop.
+- **End‑to‑End (≈10 %)** – headless loop checks score, lives.
+- **CI** – GitHub Actions that run formatting, tests, linting.
+
+### Phase 7 – Documentation & CI
+1. Update `README.md` with build steps.
+2. Add `CONTRIBUTING.md` explaining coding style, tests.
+3. Create GitHub Actions workflow (`ci.yml`).
+4. Add `LICENSE`.
+
+### Phase 8 – Optional Extensions
+- Multiplayer, leaderboard, save/load, AI difficulty.
