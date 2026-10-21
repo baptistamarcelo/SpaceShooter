@@ -4,7 +4,7 @@ from src.config import clock, FPS, bg_pos_y_1, bg_space, game_state
 from src.entities.player import Player
 from src.entities.ship import Ship
 from src.entities.ui import Ui
-from src.exception.InvalidGameStateMatchException import InvalidGameStateMatchException
+from src.exception import InvalidGameStateMatchException
 from src.screen import menu, game_over
 from src.screen.background import Background
 from src.update import Update

@@ -1,7 +1,6 @@
 import pygame
 
 from src.exception import InvalidGameStateMatchException
-from src.exception.InvalidGameStateMatchException import InvalidGameStateMatchException
 
 pygame.init()
 
